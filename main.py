@@ -16,6 +16,7 @@ where each index 1-9 corresponds with a number on a number pad,
 so you get a 3 by 3 board representation.
 '''
 def display_board(board):
+    clear_output()
     print("[{},{},{}]\n".format(board[7], board[8], board[9]))
     print("[{},{},{}]\n".format(board[4], board[5], board[6]))
     print("[{},{},{}]\n".format(board[1], board[2], board[3]))
@@ -45,30 +46,30 @@ Write a function that takes in a board and a mark (X or O)
  and then checks to see if that mark has won.
 '''
 def win_check(board, mark):
-    return (((board[7]==board[8] and board[8]==board[9]) or #across 1-3
-    (board[4]==board[5] and board[5]==board[6]) or
-    (board[1]==board[2] and board[2]==board[3]) or
-    (board[7]==board[4] and board[4]==board[1]) or #vertical 1-3
-    (board[8]==board[5] and board[5]==board[2]) or
-    (board[4]==board[6] and board[6]==board[3]) or
-    (board[1]==board[5] and board[5]==board[9]) or #diagnal 1-2
-    (board[7]==board[5] and board[5]==board[3])))
+    return (((board[7]==mark and board[8] == mark and board[9] == mark) or #across 1-3
+    (board[4]== mark and board[5] == mark and board[6] == mark) or
+    (board[1]== mark and board[2] == mark and board[3] == mark) or
+    (board[7]== mark and board[4] ==mark and board[1] == mark) or #vertical 1-3
+    (board[8]== mark and board[5] == mark and board[2] == mark) or
+    (board[9]== mark and board[6] == mark and board[3] == mark) or
+    (board[1]== mark and board[5] == mark and board[9]==mark) or #diagnal 1-2
+    (board[7]== mark and board[5]== mark and board[3] == mark)))
 '''
 Write a function that uses the random module to randomly decide which player goes first.
 You may want to lookup random.randint() Return a string of which player went first.
 '''
 def choose_first():
-    print("Player {} will go first".format(random.randint(1,2)))
+     if random.randint(0, 1) == 0:
+        return 'Player 2'
+     else:
+        return 'Player 1'
 
 '''
 Write a function that returns a boolean indicating
 whether a space on the board is freely available.
 '''
 def space_check(board, position):
-    if str(board[position]) == ' ':
-        return True
-    else:
-        return False
+    return board[position] == ' '
 
 '''
 Write a function that checks if the board is full and returns a boolean value.
@@ -78,7 +79,7 @@ def full_board_check(board):
     for i in range(1,10):
         if space_check(board,i):
             return False
-        return True
+    return True
 
 '''
 Write a function that asks for a player's next position (as a number 1-9) and
@@ -89,7 +90,10 @@ def player_choice(board):
     position = 0
 
     while position not in [1,2,3,4,5,6,7,8,9,10] or not space_check(board,position):
-        position = int(input("Chose your next position (1-9): "))
+        position = int(input("Choose your next position (1-9): "))
+        if space_check(board,position) == False:
+            print("Sorry this space has been taken")
+
     return position
 
 
@@ -99,7 +103,7 @@ Write a function that asks the player if they want to play again
 '''
 def replay():
     choice = input("Would you like to play again ? Enter Y for yes N for n: ").upper()
-    if choice.char() == 'Y':
+    if choice == 'Y':
         return True
     else:
         return False
@@ -112,8 +116,6 @@ while True:
     theBoard = [' '] * 10
     player1_marker, player2_marker = player_input()
     turn = choose_first()
-    print('{} will go first.'.format(turn))
-
     play_game = input('Are you ready to play? Enter Yes or No.')
 
     if play_game.lower()[0] == 'y':
@@ -124,7 +126,7 @@ while True:
     while game_on:
         if turn == 'Player 1':
             # Player1's turn.
-
+            print("Player {} its your turn".format(turn))
             display_board(theBoard)
             position = player_choice(theBoard)
             place_marker(theBoard, player1_marker, position)
@@ -143,7 +145,7 @@ while True:
 
         else:
             # Player2's turn.
-
+            print("Player {} its your turn".format(turn))
             display_board(theBoard)
             position = player_choice(theBoard)
             place_marker(theBoard, player2_marker, position)
